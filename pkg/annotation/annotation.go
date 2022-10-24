@@ -13,7 +13,12 @@ func InitAnnotations(packages []PackageAnnotation) {
 
 func internalProcessors() {
 	processors = make(map[string]AnnotationProcessor)
-	RegisterProcessor("@Config", &ConfigAnnotationProcessor{})
+	processorsList := []AnnotationProcessor {
+		&ConfigAnnotationProcessor{},
+	}
+	for _, processor := range processorsList {
+		RegisterProcessor(processor.AnnotationName(), processor)
+	}
 }
 
 func RegisterProcessor(name string, processor AnnotationProcessor) {
