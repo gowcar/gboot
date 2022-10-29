@@ -1,8 +1,9 @@
 package annotation
 
 import (
-	"github.com/gowcar/gboot/internal/ref"
+	"github.com/gowcar/gboot/pkg/application"
 	"github.com/gowcar/gboot/pkg/log"
+	"github.com/gowcar/gboot/pkg/ref"
 )
 
 var processors map[string]Processor
@@ -32,17 +33,18 @@ func RegisterProcessor(processor Processor) {
 }
 
 func processPackage(pkg PackageAnnotation) {
-	log.Debug("pkg.name is %v", pkg.PackageName())
 	for _, anno := range pkg.AllAnnotations() {
-		registerTypes(anno)
-		p, _ := processors[anno.AnnotationName]
-		if p != nil  && anno.AnnotationTarget & p.AcceptTargets() == anno.AnnotationTarget {
+		prepare(anno, pkg.AllAnnotations())
+		p, exist := processors[anno.AnnotationName]
+		if exist && p != nil  && anno.AnnotationTarget & p.AcceptTargets() == anno.AnnotationTarget {
 			p.Process(anno)
+		} else {
+			log.Warn("No processor found for the annotation:%v", anno.AnnotationName)
 		}
 	}
 }
 
-func registerTypes(anno Annotation) {
+func prepare(anno Annotation, all []Annotation) {
 	switch anno.AnnotationTarget {
 	case Var:
 		ref.RegisterVar(&ref.TypeDesc{
@@ -59,20 +61,17 @@ func registerTypes(anno Annotation) {
 			Name:        anno.TargetName,
 			Object:      anno.TargetObject,
 		})
+		application.RegisterInstanceFactory(anno.TargetName, &application.GenericObjectFactory{})
 	}
-
+	anno.ParentAnnotations = findParentAnnotation(anno, all)
 }
 
-func processPackageVariableAnnotation(anno Annotation) {
-	p, _ := processors[anno.AnnotationName]
-	if p != nil  && anno.AnnotationTarget & p.AcceptTargets() == anno.AnnotationTarget {
-		p.Process(anno)
+func findParentAnnotation(anno Annotation, all []Annotation) []Annotation {
+	parent := make([]Annotation, 0)
+	for _, item := range all {
+		if anno.TargetTypeName == item.TargetName {
+			parent = append(parent, item)
+		}
 	}
-}
-
-func processPackageFunctionAnnotation(anno Annotation) {
-	p, _ := processors[anno.AnnotationName]
-	if p != nil {
-		p.Process(anno)
-	}
+	return parent
 }

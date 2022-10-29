@@ -17,23 +17,20 @@ const AllTarget Target = Var|Func|Struct|StructField|StructMethod|Interface|Inte
 type Params map[string]any
 
 type Annotation struct {
-	PackageName      string
-	AnnotationName   string
-	AnnotationTarget Target
-	TargetName       string
-	TargetObject any
-	Params       Params
-	RawData      string
+	PackageName       string
+	AnnotationName    string
+	AnnotationTarget  Target
+	TargetTypeName    string
+	TargetName        string
+	TargetObject      any
+	ParentAnnotations []Annotation
+	Params            Params
+	RawData           string
 }
 
 type PackageAnnotation interface {
 	PackageName() string
 	AllAnnotations() []Annotation
-	//PackageVariableAnnotations() []Annotation
-	//PackageFunctionAnnotations() []Annotation
-	//StructAnnotations() []Annotation
-	//StructFieldAnnotations() []Annotation
-	//StructMethodAnnotations() []Annotation
 }
 
 type Processor interface {

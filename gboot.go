@@ -2,6 +2,7 @@ package gboot
 
 import (
 	"github.com/gowcar/gboot/pkg/annotation"
+	"github.com/gowcar/gboot/pkg/application"
 	"github.com/gowcar/gboot/pkg/config"
 	"github.com/gowcar/gboot/pkg/log"
 	"sync"
@@ -35,6 +36,7 @@ func initApplication() {
 	log.Debug("GBoot application initializing")
 	log.Debug("Web framework ====> %s", Fiber)
 	log.Debug("ORMapping framework ====> %s", GORM)
+	application.Initialize()
 }
 
 func initConfig() {
