@@ -1,9 +1,5 @@
 package gboot
 
-import (
-	"github.com/gowcar/gboot/internal/web"
-)
-
 type (
 	WebFramework int8
 	ORM          int8
@@ -39,5 +35,3 @@ func (p ORM) String() string {
 		return "UNKNOWN"
 	}
 }
-
-type Context web.Context

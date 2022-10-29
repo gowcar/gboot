@@ -1,10 +1,12 @@
 package gboot
 
 import (
+	"context"
 	"github.com/gowcar/gboot/pkg/annotation"
 	"github.com/gowcar/gboot/pkg/application"
 	"github.com/gowcar/gboot/pkg/config"
 	"github.com/gowcar/gboot/pkg/log"
+	"github.com/gowcar/gboot/pkg/web"
 	"sync"
 )
 
@@ -19,6 +21,12 @@ func StartApplication() {
 	log.Debug("application %v started", ConfigGet("application.name"))
 }
 
+func Waitfor() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	<- ctx.Done()
+}
+
 func RegisterAnnotations(packages []annotation.PackageAnnotation) {
 	initialize(packages)
 }
@@ -29,7 +37,16 @@ func initialize(packages []annotation.PackageAnnotation) {
 		initLogger()
 		annotation.InitAnnotations(packages)
 		initApplication()
+		initWeb()
 	})
+}
+
+func initWeb() {
+	web.Initialize(&web.WebConfig{Addr: ":3000"})
+	//web.AddHandler("/", func(ctx *fiber.Ctx) error {
+	//	return ctx.SendString("Hello, GBoot!")
+	//})
+	web.Start()
 }
 
 func initApplication() {
