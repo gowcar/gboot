@@ -9,19 +9,19 @@ import (
 type ConfigAnnotationProcessor struct {
 }
 
-func (ConfigAnnotationProcessor) AnnotationName() string {
-	return "@Config"
+func (p ConfigAnnotationProcessor) AcceptTargets() Target {
+	return Var | StructField
 }
 
-func (ConfigAnnotationProcessor) ProcessAnnotation(anno Annotation) {
-	ref.RegisterType(&ref.TypeDesc{
-		Name:   anno.TargetName,
-		Object: anno.TargetObject,
-	})
+func (p ConfigAnnotationProcessor) Process(anno Annotation) {
 	key := anno.Params["default"]
 	configValue := config.ConfigGet(key.(string))
 	if configValue != nil {
 		ref.SetValue(anno.TargetObject, configValue)
 		log.Debug("inject package variable %v", configValue)
 	}
+}
+
+func (p ConfigAnnotationProcessor) Name() string {
+	return "@Config"
 }

@@ -1,26 +1,43 @@
 package annotation
 
-type AnnotationParams map[string]any
+type Target int8
+
+const (
+	Var = 1 << iota
+	Func
+	Struct
+	StructField
+	StructMethod
+	Interface
+	InterfaceMethod
+)
+
+const AllTarget Target = Var|Func|Struct|StructField|StructMethod|Interface|InterfaceMethod
+
+type Params map[string]any
 
 type Annotation struct {
-	PackageName    string
-	AnnotationName string
-	TargetName     string
-	TargetObject   any
-	Params         AnnotationParams
-	RawData        string
+	PackageName      string
+	AnnotationName   string
+	AnnotationTarget Target
+	TargetName       string
+	TargetObject any
+	Params       Params
+	RawData      string
 }
 
 type PackageAnnotation interface {
 	PackageName() string
-	PackageVariableAnnotations() []Annotation
-	PackageFunctionAnnotations() []Annotation
-	StructAnnotations() []Annotation
-	StructFieldAnnotations() []Annotation
-	StructMethodAnnotations() []Annotation
+	AllAnnotations() []Annotation
+	//PackageVariableAnnotations() []Annotation
+	//PackageFunctionAnnotations() []Annotation
+	//StructAnnotations() []Annotation
+	//StructFieldAnnotations() []Annotation
+	//StructMethodAnnotations() []Annotation
 }
 
-type AnnotationProcessor interface {
-	AnnotationName() string
-	ProcessAnnotation(annotation Annotation)
+type Processor interface {
+	Name() string
+	AcceptTargets() Target
+	Process(anno Annotation)
 }

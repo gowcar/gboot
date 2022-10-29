@@ -1,13 +1,10 @@
 package application
 
-import "github.com/gowcar/gboot/internal/ref"
+var varInjectors map[string]Injector
+var fieldInjectors map[string]Injector
+var instanceCreators map[string]InstanceFactory
 
 var container map[string]component
-
-type component struct {
-	componentType ref.TypeDesc
-	instance      any
-}
 
 func Initialize() {
 
@@ -21,3 +18,16 @@ func GetComponent(componentId string) any {
 		return nil
 	}
 }
+
+func RegisterVarInjector(varName string, injector Injector) {
+	varInjectors[varName] = injector
+}
+
+func RegisterStructFieldInjector(structName string, fieldName string, injector Injector) {
+	fieldInjectors[structName+"."+fieldName] = injector
+}
+
+func RegisterInstanceFactory(structName string, factory InstanceFactory) {
+	instanceCreators[structName] = factory
+}
+

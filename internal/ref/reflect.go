@@ -7,10 +7,14 @@ import (
 	"unsafe"
 )
 
-var types map[string]*TypeDesc
+var vars map[string]*TypeDesc
+var funcs map[string]*TypeDesc
+var structs map[string]*TypeDesc
 
 func init() {
-	types = make(map[string]*TypeDesc)
+	vars = make(map[string]*TypeDesc)
+	funcs = make(map[string]*TypeDesc)
+	structs = make(map[string]*TypeDesc)
 }
 
 func GetValue(targetObject any) any {
@@ -38,8 +42,16 @@ func NewProxyInstance(name string) any {
 	return nil
 }
 
-func RegisterType(desc *TypeDesc) {
-	types[desc.Name] = desc
+func RegisterVar(desc *TypeDesc) {
+	vars[desc.Name] = desc
+}
+
+func RegisterFunc(desc *TypeDesc) {
+	funcs[desc.Name] = desc
+}
+
+func RegisterStruct(desc *TypeDesc) {
+	structs[desc.Name] = desc
 }
 
 type TypeDesc struct {
