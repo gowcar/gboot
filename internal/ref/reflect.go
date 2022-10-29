@@ -7,18 +7,45 @@ import (
 	"unsafe"
 )
 
-func GetValue(value reflect.Value) any {
+var types map[string]*TypeDesc
+
+func init() {
+	types = make(map[string]*TypeDesc)
+}
+
+func GetValue(targetObject any) any {
+	value := reflect.ValueOf(targetObject).Elem()
 	return value.Interface()
 }
 
-func SetValue(value reflect.Value, targetValue any, targetType reflect.Type) {
+func SetValue(targetObject any, targetValue any) {
 	t := reflect.ValueOf(targetValue)
+	value := reflect.ValueOf(targetObject).Elem()
+	targetType := reflect.TypeOf(targetObject).Elem()
 	if value.CanSet() && t.CanConvert(targetType) {
 		t = t.Convert(targetType)
 		value.Set(t)
 	} else {
 		log.Error("the value %v cannot be assign a value %v", value, targetValue)
 	}
+}
+
+func NewInstance(name string) any {
+	return nil
+}
+
+func NewProxyInstance(name string) any {
+	return nil
+}
+
+func RegisterType(desc *TypeDesc) {
+	types[desc.Name] = desc
+}
+
+type TypeDesc struct {
+	Name        string
+	Object      any
+	ProxyObject any
 }
 
 func GetUnExportFiled(s interface{}, field string) (accessableField, addressableSource reflect.Value) {

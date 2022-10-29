@@ -1,16 +1,12 @@
 package annotation
 
-import (
-	"reflect"
-)
-
 type AnnotationParams map[string]any
 
 type Annotation struct {
 	PackageName    string
 	AnnotationName string
-	TargetType     reflect.Type
-	TargetValue    reflect.Value
+	TargetName     string
+	TargetObject   any
 	Params         AnnotationParams
 	RawData        string
 }

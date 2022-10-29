@@ -13,18 +13,18 @@ func InitAnnotations(packages []PackageAnnotation) {
 
 func internalProcessors() {
 	processors = make(map[string]AnnotationProcessor)
-	processorsList := []AnnotationProcessor {
+	processorsList := []AnnotationProcessor{
 		&ConfigAnnotationProcessor{},
 	}
 	for _, processor := range processorsList {
-		RegisterProcessor(processor.AnnotationName(), processor)
+		RegisterProcessor(processor)
 	}
 }
 
-func RegisterProcessor(name string, processor AnnotationProcessor) {
-	p, _ := processors[name]
+func RegisterProcessor(processor AnnotationProcessor) {
+	p, _ := processors[processor.AnnotationName()]
 	if p == nil {
-		processors[name] = processor
+		processors[processor.AnnotationName()] = processor
 	}
 }
 
@@ -36,7 +36,7 @@ func processPackage(pkg PackageAnnotation) {
 }
 
 func processPackageVariableAnnotation(anno Annotation) {
-	p, _:= processors[anno.AnnotationName]
+	p, _ := processors[anno.AnnotationName]
 	if p != nil {
 		p.ProcessAnnotation(anno)
 	}

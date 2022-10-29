@@ -6,8 +6,7 @@ import (
 	"github.com/gowcar/gboot/pkg/log"
 )
 
-type ConfigAnnotationProcessor struct{
-
+type ConfigAnnotationProcessor struct {
 }
 
 func (ConfigAnnotationProcessor) AnnotationName() string {
@@ -15,11 +14,14 @@ func (ConfigAnnotationProcessor) AnnotationName() string {
 }
 
 func (ConfigAnnotationProcessor) ProcessAnnotation(anno Annotation) {
+	ref.RegisterType(&ref.TypeDesc{
+		Name:   anno.TargetName,
+		Object: anno.TargetObject,
+	})
 	key := anno.Params["default"]
 	configValue := config.ConfigGet(key.(string))
 	if configValue != nil {
-		ref.SetValue(anno.TargetValue.Elem(), configValue, anno.TargetType.Elem())
+		ref.SetValue(anno.TargetObject, configValue)
 		log.Debug("inject package variable %v", configValue)
 	}
 }
-
