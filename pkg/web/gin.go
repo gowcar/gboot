@@ -4,10 +4,10 @@ type GinEngine struct{
 
 }
 
-func (engine *GinEngine) initial() {
+func (engine *GinEngine) initialize() {
 }
 
-func (engine *GinEngine) registerHandler() {
+func (engine *GinEngine) registerHandler(string, string, any) {
 }
 
 func (engine *GinEngine) start() {

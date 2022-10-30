@@ -29,11 +29,7 @@ func (p Framework) String() string {
 
 
 type Engine interface {
-	initial()
-	registerHandler()
+	initialize()
+	registerHandler(method string, path string, fn any)
 	start()
-}
-
-type EngineConfig struct {
-	Addr string
 }

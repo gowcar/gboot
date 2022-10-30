@@ -11,7 +11,15 @@ var once sync.Once
 func Initialize()  {
 	once.Do(func() {
 		chooseEngine()
+		engine.initialize()
 	})
+	AddHandler("GET", "/", func() {
+
+	})
+}
+
+func Start()  {
+	go engine.start()
 }
 
 func chooseEngine() {
@@ -23,6 +31,6 @@ func chooseEngine() {
 	engine = &FiberEngine{}
 }
 
-func Start()  {
-	engine.start()
+func AddHandler(method string, path string, handler any) {
+	engine.registerHandler(method, path, handler)
 }
