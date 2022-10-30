@@ -37,22 +37,23 @@ func initialize(packages []annotation.PackageAnnotation) {
 		initLogger()
 		annotation.InitAnnotations(packages)
 		initApplication()
-		initWeb()
+		initWebEngine()
+		startWebEngine()
 	})
 }
 
-func initWeb() {
-	web.Initialize(&web.WebConfig{Addr: ":3000"})
-	//web.AddHandler("/", func(ctx *fiber.Ctx) error {
-	//	return ctx.SendString("Hello, GBoot!")
-	//})
+func startWebEngine() {
 	web.Start()
+}
+
+func initWebEngine() {
+	web.Initialize()
 }
 
 func initApplication() {
 	log.Debug("GBoot application initializing")
-	log.Debug("Web framework ====> %s", Fiber)
-	log.Debug("ORMapping framework ====> %s", GORM)
+	log.Debug("Web framework ====> %s", config.Config().Application.WebFramework)
+	log.Debug("ORMapping framework ====> %s", config.Config().Application.DBFramework)
 	application.Initialize()
 }
 

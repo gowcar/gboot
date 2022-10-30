@@ -2,39 +2,23 @@ package web
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/gowcar/gboot/pkg/log"
-	"sync"
+	"github.com/gowcar/gboot/pkg/config"
 )
 
-var webApp *fiber.App
-var config *WebConfig
-var once sync.Once
-var handlers = make(map[string]fiber.Handler)
-
-func Initialize(webConf *WebConfig) *fiber.App{
-	once.Do(func() {
-		config = webConf
-		webApp = fiber.New()
-	})
-	return webApp
+type FiberEngine struct{
+	app *fiber.App
 }
 
-func AddHandler(path string, handler fiber.Handler) {
-	//webApp.Add("GET", path, handler)
-	handlers[path] = handler
-	//webApp.Get(path, handler)
+func (engine *FiberEngine) initial() {
+	engine.app = fiber.New()
 }
 
-func Start()  {
-	webApp.All("*", func(ctx *fiber.Ctx) error {
-		log.Debug("path ==> %v", ctx.Path())
-		h, exist := handlers[ctx.Path()]
-		if !exist {
-			ctx.SendStatus(fiber.StatusNotFound)
-		} else {
-			h(ctx)
-		}
-		return nil
+func (engine *FiberEngine) registerHandler() {
+	engine.app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World!")
 	})
-	go webApp.Listen(config.Addr)
+}
+
+func (engine *FiberEngine) start() {
+	engine.app.Listen(config.Config().Application.Addr)
 }

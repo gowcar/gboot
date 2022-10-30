@@ -12,8 +12,10 @@ type AppConfig struct {
 }
 
 type Application struct {
-	Name string `yaml:"name"`
-	Port int    `yaml:"port"`
+	Name         string `yaml:"name"`
+	Addr         string `yaml:"addr"`
+	WebFramework string `yaml:"web_framework" mapstructure:"web_framework"`
+	DBFramework  string `yaml:"db_framework" mapstructure:"db_framework"`
 }
 
 type Log struct {
